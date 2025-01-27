@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class HundirLaFlota {
     private Casilla[][] tablero = new Casilla[10][10];
     private Casilla[][] tablero2 = new Casilla[10][10];
+    int NumBarcos = 3;
     private char simbolo = '\u25A0';
 
     public void CrearTablero(){
@@ -23,6 +24,26 @@ public class HundirLaFlota {
             {
                 tablero2[i][j] = new Casilla(); 
             }
+        }
+
+        int contador = 0;
+        while(contador < NumBarcos)
+        {
+            int Random1 = (int) (Math.random() * 10);
+            int Random2 = (int) (Math.random() * 10);
+            int Random3 = (int) (Math.random() * 2);
+            //for(int i = 0; i < barco; i++)
+            if(Random3 == 0)
+            {
+                tablero2[Random1][Random2].setBarco(new Barco(contador));
+                tablero2[Random1][Random2].setOcupado(true);
+            }
+            else
+            {
+                tablero2[Random1][Random2].setBarco(new Barco(contador));
+                tablero2[Random1][Random2].setOcupado(true);
+            }
+            contador++;
         }
         imprimirTablero2();
     }
@@ -64,7 +85,7 @@ public class HundirLaFlota {
 
         Scanner sc  = new Scanner(System.in);
         
-        Barco barcos[] = new Barco[3];
+        Barco barcos[] = new Barco[NumBarcos];
 
         boolean datosCorrectos = false;
 
@@ -208,6 +229,8 @@ public class HundirLaFlota {
         CrearTablero2();
 
         boolean juegoAcabado = false;
+        int contadorHundidos1 = 0;
+        int contadorHundidos2 = 0;
 
         do
         {
@@ -242,14 +265,22 @@ public class HundirLaFlota {
                 System.out.println("-------------------");
                 tablero2[fila][columna].setTocado(true);
                 comprobarHundido(tablero2, fila, columna);
-                imprimirTablero2();
             }
             else
             {
                 System.out.println("¡Agua!");
                 System.out.println("-------------------");
                 tablero2[fila][columna].setAgua(true);
-                imprimirTablero2();
+            }
+            
+            imprimirTablero2();
+
+            if (contadorHundidos1 == NumBarcos){
+                System.out.println("¡Has ganado!");
+            }   
+            else if (contadorHundidos2 == NumBarcos)
+            {
+                System.out.println("¡Has perdido!");
             }
         }
         while(!juegoAcabado);
