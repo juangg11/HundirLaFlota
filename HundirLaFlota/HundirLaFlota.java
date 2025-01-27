@@ -58,50 +58,79 @@ public class HundirLaFlota {
                 System.out.println("Casilla ocupada");
                 i--;
             }
-            else 
-                if (orientacion == 0)
+            else if (orientacion == 0)
                 {
                     for (int j = 0; j < barcos[i].getTamanio(); j++)
                     {
                         if (fila + j < tablero.length)
                         {
-                            tablero[fila+j][columna].setBarco(barcos[i]);
-                            tablero[fila+j][columna].setOcupado(true);
+                            if(tablero[fila+j][columna].getOcupado())
+                            {
+                                System.out.println("No se puede colocar el barco");
+                                i--;
+                                for (int a = j; a > 0; a--)
+                                {
+                                    tablero[fila+a-1][columna].setOcupado(false);
+                                    tablero[fila+a-1][columna].setBarco(null);
+                                }
+                            }
+                            else 
+                            {
+                                tablero[fila+j][columna].setBarco(barcos[i]);
+                                tablero[fila+j][columna].setOcupado(true);
+                            }
                         }
-                        else {
+                        else 
+                        {
                             System.out.println("No se puede colocar el barco");
                             i--;
                             
                             for (int a = j; a > 0; a--)
                             {
-                                tablero[fila][columna+a-1].setOcupado(false);
+                                tablero[fila+a-1][columna].setOcupado(false);
+                                tablero[fila+a-1][columna].setBarco(null);
                             }
                         }
                     }
                 }
                 else
                 {
+
                     for (int k = 0; k < barcos[i].getTamanio(); k++)
                     {
                         if (fila + k < tablero.length)
                         {
-                            tablero[fila][columna+k].setBarco(barcos[i]);
-                            tablero[fila][columna+k].setOcupado(true);
+                            if(tablero[fila][columna+k].getOcupado())
+                            {
+                                System.out.println("No se puede colocar el barco");
+                                i--;
+                                for (int a = k; a > 0; a--)
+                                {
+                                    tablero[fila][columna+a-1].setOcupado(false);
+                                    tablero[fila][columna+a-1].setBarco(null);
+                                }
+                            }
+                            else 
+                            {
+                                tablero[fila][columna+k].setBarco(barcos[i]);
+                                tablero[fila][columna+k].setOcupado(true);
+                            }
                         }
                         else 
                         {
                             System.out.println("No se puede colocar el barco");
                             i--;
-
+                            
                             for (int a = k; a > 0; a--)
                             {
                                 tablero[fila][columna+a-1].setOcupado(false);
+                                tablero[fila][columna+a-1].setBarco(null);
                             }
                         }
                     }
                 }
                 
-                imprimirTablero();
+            imprimirTablero();
         }
     }
 
