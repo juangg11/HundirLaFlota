@@ -39,6 +39,12 @@ public class HundirLaFlota {
         
         Barco barcos[] = new Barco[5];
 
+        boolean datosCorrectos = false;
+
+        int fila;
+        int columna;
+        int orientacion;
+
         for (int i = 0; i < barcos.length; i++)
         {
             barcos[i] = new Barco(i+1);
@@ -46,16 +52,42 @@ public class HundirLaFlota {
 
         for (int i = 0; i < barcos.length; i++)
         {
-            System.out.println("Coloca los barcos: ");
-            System.out.println("Introduce la fila: ");
-            int fila = sc.nextInt();
-            System.out.println("Introduce la columna: ");
-            int columna = sc.nextInt();
-            System.out.println("Introduce la orientacion (1 = horizontal, 0 = vertical): ");
-            int orientacion = sc.nextInt();
+            do 
+            {
+                System.out.println("-------------------");
+                System.out.println("Coloca los barcos: ");
+                System.out.println("-------------------");
+                System.out.println("Introduce la fila: ");
+                fila = sc.nextInt();
+                System.out.println("-------------------");
+                System.out.println("Introduce la columna: ");
+                columna = sc.nextInt();
+                System.out.println("-------------------");
+                System.out.println("Introduce la orientacion (1 = horizontal, 0 = vertical): ");
+                System.out.println("-------------------");
+                orientacion = sc.nextInt();
+
+                if(fila < 0 || fila > 9 || columna < 0 || columna > 9 || orientacion < 0 || orientacion > 1)
+                {   
+                    System.out.println("----------X---------");
+                    System.out.println("\u001B[31mDatos incorrectos\u001B[0m");
+                    System.out.println("----------X---------");
+                    datosCorrectos = false;
+                }
+                else
+                {
+                    datosCorrectos = true;
+                }
+            }
+            while(!datosCorrectos);
+
+            System.out.println("-------------------");
+
             if (tablero[fila][columna].getOcupado())
             {
-                System.out.println("Casilla ocupada");
+                System.out.println("----------X---------");
+                System.out.println("\u001B[31mCasilla ocupada\u001B[0m");
+                System.out.println("----------X---------");
                 i--;
             }
             else if (orientacion == 0)
@@ -66,7 +98,9 @@ public class HundirLaFlota {
                         {
                             if(tablero[fila+j][columna].getOcupado())
                             {
-                                System.out.println("No se puede colocar el barco");
+                                System.out.println("----------X---------");
+                                System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
+                                System.out.println("----------X---------");
                                 i--;
                                 for (int a = j; a > 0; a--)
                                 {
@@ -82,7 +116,9 @@ public class HundirLaFlota {
                         }
                         else 
                         {
-                            System.out.println("No se puede colocar el barco");
+                            System.out.println("----------X---------");
+                            System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
+                            System.out.println("----------X---------");
                             i--;
                             
                             for (int a = j; a > 0; a--)
@@ -102,7 +138,9 @@ public class HundirLaFlota {
                         {
                             if(tablero[fila][columna+k].getOcupado())
                             {
-                                System.out.println("No se puede colocar el barco");
+                                System.out.println("----------X---------");
+                                System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
+                                System.out.println("----------X---------");
                                 i--;
                                 for (int a = k; a > 0; a--)
                                 {
@@ -118,7 +156,9 @@ public class HundirLaFlota {
                         }
                         else 
                         {
-                            System.out.println("No se puede colocar el barco");
+                            System.out.println("----------X---------");
+                            System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
+                            System.out.println("----------X---------");
                             i--;
                             
                             for (int a = k; a > 0; a--)
