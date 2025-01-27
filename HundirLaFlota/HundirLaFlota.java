@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class HundirLaFlota {
     private Casilla[][] tablero = new Casilla[10][10];
+    private Casilla[][] tablero2 = new Casilla[10][10];
     private char simbolo = '\u25A0';
 
     public void CrearTablero(){
@@ -13,6 +14,17 @@ public class HundirLaFlota {
             }
         }
         imprimirTablero();
+    }
+
+    public void CrearTablero2(){
+        for (int i = 0; i < tablero2.length; i++) 
+        {
+            for (int j = 0; j < tablero2[0].length; j++) 
+            {
+                tablero2[i][j] = new Casilla(); 
+            }
+        }
+        imprimirTablero2();
     }
 
 
@@ -31,13 +43,28 @@ public class HundirLaFlota {
         }
     }
 
+    public void imprimirTablero2() {
+        for (int i = 0; i < tablero2.length; i++) {
+            for (int j = 0; j < tablero2[0].length; j++) {
+                if (tablero2[i][j].getAgua()) {
+                    System.out.print("\u001B[34m" + simbolo + "  ");
+                } else if (tablero2[i][j].getTocado()) {
+                    System.out.print("\u001B[31m" + simbolo + "  ");
+                } else {
+                    System.out.print("\u001B[32m" + simbolo + "  ");
+                }
+            }
+            System.out.println("\u001B[0m");
+        }
+    }
+    
     public void Jugar()
     {   
         CrearTablero();
 
         Scanner sc  = new Scanner(System.in);
         
-        Barco barcos[] = new Barco[5];
+        Barco barcos[] = new Barco[3];
 
         boolean datosCorrectos = false;
 
@@ -172,8 +199,78 @@ public class HundirLaFlota {
                 
             imprimirTablero();
         }
+
+        System.out.println("-------------------");
+        System.out.println("Has colocado los barcos");
+        System.out.println("-------------------");
+        System.out.println("Este es el tablero enemigo, para jugar, introduce las coordenadas de disparo:");
+        System.out.println("-------------------");
+        CrearTablero2();
+
+        boolean juegoAcabado = false;
+
+        do
+        {
+            do 
+            {
+                System.out.println("-------------------");
+                System.out.println("Introduce la fila: ");
+                fila = sc.nextInt();
+                System.out.println("-------------------");
+                System.out.println("Introduce la columna: ");
+                columna = sc.nextInt();
+                System.out.println("-------------------");
+                tablero2[fila][columna].setAgua(true);
+    
+                if(fila < 0 || fila > 9 || columna < 0 || columna > 9)
+                {   
+                    System.out.println("----------X---------");
+                    System.out.println("\u001B[31mDatos incorrectos\u001B[0m");
+                    System.out.println("----------X---------");
+                    datosCorrectos = false;
+                }
+                else
+                {
+                    datosCorrectos = true;
+                }
+            }
+            while(!datosCorrectos);
+    
+            if (tablero2[fila][columna].getOcupado())
+            {
+                System.out.println("¡Tocado!");
+                System.out.println("-------------------");
+                tablero2[fila][columna].setTocado(true);
+                comprobarHundido(tablero2, fila, columna);
+                imprimirTablero2();
+            }
+            else
+            {
+                System.out.println("¡Agua!");
+                System.out.println("-------------------");
+                tablero2[fila][columna].setAgua(true);
+                imprimirTablero2();
+            }
+        }
+        while(!juegoAcabado);
     }
 
+    public void comprobarHundido(Casilla[][] tablero, int fila, int columna) {
+        Casilla casillaTocada = tablero[fila][columna];
+        int recorrido = casillaTocada.getBarco().getTamanio();
+        int contador = 0;
+        for(int i = 0; i < recorrido; i++)
+        {
+            if(tablero[fila][columna+i].getTocado()){
+                contador++;
+            }
+        }
+        if(contador == 0){
+            System.out.println("¡Hundido!");
+            casillaTocada.getBarco().hundido = true;
+            casillaTocada.tocarCasilla(tablero, casillaTocada.getBarco());
+        }
+    }
     public static void main(String[] args) {
         HundirLaFlota juego = new HundirLaFlota();
         juego.Jugar();
