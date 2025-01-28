@@ -6,7 +6,7 @@ public class HundirLaFlota {
     int NumBarcos = 3;
     private char simbolo = '\u25A0';
     private int Turno = 1;
-
+    private static Sonido sonido = new Sonido();
     public void CrearTablero(){
         for (int i = 0; i < tablero.length; i++) 
         {
@@ -25,60 +25,70 @@ public class HundirLaFlota {
         {
             System.out.println("-------------------");
             System.out.println("Empieza el Jugador");
+            System.out.println("-------------------");
         }
         else if (Turno == 0)
         {
             System.out.println("-------------------");
             System.out.println("Empieza el Enemigo");
+            System.out.println("-------------------");
         }
     }
 
-    public void CrearTablero2(){
-        for (int i = 0; i < tablero2.length; i++) 
-        {
-            for (int j = 0; j < tablero2[0].length; j++) 
-            {
-                tablero2[i][j] = new Casilla(); 
+    public void CrearTablero2() {
+        for (int i = 0; i < tablero2.length; i++) {
+            for (int j = 0; j < tablero2[0].length; j++) {
+                tablero2[i][j] = new Casilla();
             }
         }
-
+    
         Barco barcos2[] = new Barco[NumBarcos];
-
-        for (int i = 0; i < barcos2.length; i++)
-        {
-            barcos2[i] = new Barco(i+1);
+    
+        for (int i = 0; i < barcos2.length; i++) {
+            barcos2[i] = new Barco(i + 1);
         }
-
-
+    
         int contador = 0;
-        while(contador < NumBarcos)
-        {
+        while (contador < NumBarcos) {
             int Random1 = (int) (Math.random() * 10);
             int Random2 = (int) (Math.random() * 10);
             int Random3 = (int) (Math.random() * 2);
             int contador2 = 0;
-            do
-            {
-                if(Random3 == 0)
-                {
-                    tablero2[Random1][Random2+contador2].setBarco(barcos2[contador]);
-                    tablero2[Random1][Random2+contador2].setOcupado(true);
+            boolean colocacionExitosa = true;
+    
+            do {
+                try {
+                    if (Random3 == 0) { 
+                        if (Random2 + contador2 >= 10) { 
+                            colocacionExitosa = false;
+                            break;
+                        }
+                        tablero2[Random1][Random2 + contador2].setBarco(barcos2[contador]);
+                        tablero2[Random1][Random2 + contador2].setOcupado(true);
+                    } else { 
+                        if (Random1 + contador2 >= 10) { 
+                            colocacionExitosa = false;
+                            break;
+                        }
+                        tablero2[Random1 + contador2][Random2].setBarco(barcos2[contador]);
+                        tablero2[Random1 + contador2][Random2].setOcupado(true);
+                    }
+                    contador2++;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    colocacionExitosa = false;
+                    break;
                 }
-                else
-                {
-                    tablero2[Random1+contador2][Random2].setBarco(barcos2[contador]);
-                    tablero2[Random1+contador2][Random2].setOcupado(true);
-                }
-                contador2++;
+            } while (contador2 < barcos2[contador].getTamanio());
+    
+            if (colocacionExitosa) {
+                contador++;
             }
-            while(contador2<contador+1);
-
-            contador++;
         }
     }
-
+    
 
     public void imprimirTablero() {
+        System.out.println(" ");
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[0].length; j++) {
                 if (tablero[i][j].getOcupado() && tablero[i][j].getHundido()) 
@@ -97,11 +107,13 @@ public class HundirLaFlota {
                     System.out.print("\u001B[32m" + simbolo + "  ");
                 }
             }
-            System.out.println("\u001B[0m"); 
+            System.out.println("\u001B[0m");
         }
+        System.out.println(" ");
     }
 
     public void imprimirTablero2() {
+        System.out.println(" ");
         for (int i = 0; i < tablero2.length; i++) {
             for (int j = 0; j < tablero2[0].length; j++) {
                 if (tablero2[i][j].getAgua()) {
@@ -116,6 +128,7 @@ public class HundirLaFlota {
             }
             System.out.println("\u001B[0m");
         }
+        System.out.println(" ");
     }
     
     public void Tutorial() {
@@ -156,23 +169,32 @@ public class HundirLaFlota {
         {
             do 
             {
-                System.out.println("-------------------");
                 System.out.println("Coloca los barcos: ");
-                System.out.println("-------------------");
                 System.out.println("Introduce la fila: ");
                 fila = sc.nextInt();
-                System.out.println("-------------------");
                 System.out.println("Introduce la columna: ");
                 columna = sc.nextInt();
-                System.out.println("-------------------");
                 System.out.println("Introduce la orientacion (1 = horizontal, 0 = vertical): ");
-                System.out.println("-------------------");
                 orientacion = sc.nextInt();
 
                 if(fila < 0 || fila > 9 || columna < 0 || columna > 9 || orientacion < 0 || orientacion > 1)
                 {   
                     System.out.println("----------X---------");
-                    System.out.println("\u001B[31mDatos incorrectos\u001B[0m");
+                    System.out.println("\u001B[31mPosicion no valida\u001B[0m");
+                    System.out.println("----------X---------");
+                    datosCorrectos = false;
+                }
+                else if (orientacion == 1 && columna > 10 - barcos[i].getTamanio())
+                {
+                    System.out.println("----------X---------");
+                    System.out.println("\u001B[31mPosicion no valida\u001B[0m");
+                    System.out.println("----------X---------");
+                    datosCorrectos = false;
+                }
+                else if (orientacion == 0 && fila > 10 - barcos[i].getTamanio())
+                {
+                    System.out.println("----------X---------");
+                    System.out.println("\u001B[31mPosicion no valida\u001B[0m");
                     System.out.println("----------X---------");
                     datosCorrectos = false;
                 }
@@ -183,103 +205,59 @@ public class HundirLaFlota {
             }
             while(!datosCorrectos);
 
-            System.out.println("-------------------");
-
-            if (tablero[fila][columna].getOcupado())
-            {
+            if (tablero[fila][columna].getOcupado()) {
                 System.out.println("----------X---------");
                 System.out.println("\u001B[31mCasilla ocupada\u001B[0m");
                 System.out.println("----------X---------");
                 i--;
+            } else {
+                boolean espacioLibre = true;
+                if (orientacion == 0) {
+                    for (int j = 0; j < barcos[i].getTamanio(); j++) {
+                        if (fila + j >= tablero.length || tablero[fila + j][columna].getOcupado()) {
+                            espacioLibre = false;
+                            break;
+                        }
+                    }
+                    if (espacioLibre) {
+                        for (int j = 0; j < barcos[i].getTamanio(); j++) {
+                            tablero[fila + j][columna].setBarco(barcos[i]);
+                            tablero[fila + j][columna].setOcupado(true);
+                        }
+                    } else {
+                        System.out.println("--------------X--------------");
+                        System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
+                        System.out.println("--------------X--------------");
+                        i--;
+                    }
+                } else {
+                    for (int k = 0; k < barcos[i].getTamanio(); k++) {
+                        if (columna + k >= tablero[0].length || tablero[fila][columna + k].getOcupado()) {
+                            espacioLibre = false;
+                            break;
+                        }
+                    }
+                    if (espacioLibre) {
+                        for (int k = 0; k < barcos[i].getTamanio(); k++) {
+                            tablero[fila][columna + k].setBarco(barcos[i]);
+                            tablero[fila][columna + k].setOcupado(true);
+                        }
+                    } else {
+                        System.out.println("---------------X--------------");
+                        System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
+                        System.out.println("---------------X--------------");
+                        i--;
+                    }
+                }
             }
-            else if (orientacion == 0)
-                {
-                    for (int j = 0; j < barcos[i].getTamanio(); j++)
-                    {
-                        if (fila + j < tablero.length)
-                        {
-                            if(tablero[fila+j][columna].getOcupado())
-                            {
-                                System.out.println("----------X---------");
-                                System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
-                                System.out.println("----------X---------");
-                                i--;
-                                for (int a = j; a > 0; a--)
-                                {
-                                    tablero[fila+a-1][columna].setOcupado(false);
-                                    tablero[fila+a-1][columna].setBarco(null);
-                                }
-                            }
-                            else 
-                            {
-                                tablero[fila+j][columna].setBarco(barcos[i]);
-                                tablero[fila+j][columna].setOcupado(true);
-                            }
-                        }
-                        else 
-                        {
-                            System.out.println("----------X---------");
-                            System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
-                            System.out.println("----------X---------");
-                            i--;
-                            
-                            for (int a = j; a > 0; a--)
-                            {
-                                tablero[fila+a-1][columna].setOcupado(false);
-                                tablero[fila+a-1][columna].setBarco(null);
-                            }
-                        }
-                    }
-                }
-                else
-                {
 
-                    for (int k = 0; k < barcos[i].getTamanio(); k++)
-                    {
-                        if (fila + k < tablero.length)
-                        {
-                            if(tablero[fila][columna+k].getOcupado())
-                            {
-                                System.out.println("----------X---------");
-                                System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
-                                System.out.println("----------X---------");
-                                i--;
-                                for (int a = k; a > 0; a--)
-                                {
-                                    tablero[fila][columna+a-1].setOcupado(false);
-                                    tablero[fila][columna+a-1].setBarco(null);
-                                }
-                            }
-                            else 
-                            {
-                                tablero[fila][columna+k].setBarco(barcos[i]);
-                                tablero[fila][columna+k].setOcupado(true);
-                            }
-                        }
-                        else 
-                        {
-                            System.out.println("----------X---------");
-                            System.out.println("\u001B[31mNo se puede colocar el barco aquí\u001B[0m");
-                            System.out.println("----------X---------");
-                            i--;
-                            
-                            for (int a = k; a > 0; a--)
-                            {
-                                tablero[fila][columna+a-1].setOcupado(false);
-                                tablero[fila][columna+a-1].setBarco(null);
-                            }
-                        }
-                    }
-                }
-                
             imprimirTablero();
         }
 
-        System.out.println("-------------------");
         System.out.println("Has colocado los barcos");
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -287,7 +265,7 @@ public class HundirLaFlota {
         TurnoAzar();
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -300,20 +278,15 @@ public class HundirLaFlota {
         {
             if(Turno == 1)
             {
-                System.out.println("-------------------");
                 System.out.println("Este es el tablero enemigo, para jugar, introduce las coordenadas de disparo:");
-                System.out.println("-------------------");
                 imprimirTablero2();
 
                 do 
                 {
-                    System.out.println("-------------------");
                     System.out.println("Introduce la fila: ");
                     fila = sc.nextInt();
-                    System.out.println("-------------------");
                     System.out.println("Introduce la columna: ");
                     columna = sc.nextInt();
-                    System.out.println("-------------------");
         
                     if(fila < 0 || fila > 9 || columna < 0 || columna > 9 || tablero2[fila][columna].getAgua() || tablero2[fila][columna].getHundido() || tablero2[fila][columna].getTocado())
                     {   
@@ -331,8 +304,11 @@ public class HundirLaFlota {
         
                 if (tablero2[fila][columna].getOcupado() && !tablero2[fila][columna].getAgua())
                 {
+                    System.out.println("-------------------");
                     System.out.println("¡Tocado!");
                     System.out.println("-------------------");
+                    sonido.cargarSonido("Sonidos/disparo.wav");
+                    sonido.reproducir();
                     tablero2[fila][columna].setTocado(true);
                     tablero2[fila][columna].setAgua(false);
                     tablero2[fila][columna].getBarco().numTocado++;
@@ -355,13 +331,15 @@ public class HundirLaFlota {
                 }
                 else if (tablero2[fila][columna].getAgua())
                 {
-                    System.out.println("¡Casilla Repetida!");
-                    System.out.println("-------------------");
+                    System.out.println("Casilla Repetida");
                 }
                 else
                 {
-                    System.out.println("¡Agua!");
                     System.out.println("-------------------");
+                    System.out.println("Agua");
+                    System.out.println("-------------------");
+                    sonido.cargarSonido("Sonidos/agua.wav");
+                    sonido.reproducir();
                     tablero2[fila][columna].setAgua(true);
                     Turno = 0;
                 }
@@ -369,7 +347,7 @@ public class HundirLaFlota {
                 imprimirTablero2();
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -386,12 +364,16 @@ public class HundirLaFlota {
                     Random2 = (int) (Math.random() * 10);
                     if (!tablero[Random1][Random2].getAgua() && !tablero[Random1][Random2].getTocado() && !tablero[Random1][Random2].getHundido()) {
                         disparoValido = true;
-                        if (tablero[Random1][Random2].getOcupado()) {
+                        if (tablero[Random1][Random2].getOcupado()) 
+                        {
+                            System.out.println("-------------------");
                             System.out.println("El enemigo ha tocado un barco");
                             System.out.println("-------------------");
+                            sonido.cargarSonido("Sonidos/disparo.wav");
+                            sonido.reproducir();
                             tablero[Random1][Random2].setTocado(true);
                             tablero[Random1][Random2].getBarco().numTocado++;
-    
+                            
                             if(tablero[Random1][Random2].getBarco().comprobarHundido())
                             {
                                 for(int i = 0; i < tablero.length; i++)
@@ -408,9 +390,14 @@ public class HundirLaFlota {
                             contadorHundidos2++;
                             }
     
-                        } else {
+                        } else 
+                        {
+                            System.out.println("-------------------");
                             System.out.println("El enemigo ha disparado al agua");
                             System.out.println("-------------------");
+                            sonido.cargarSonido("Sonidos/agua.wav");
+                            sonido.reproducir();
+
                             tablero[Random1][Random2].setAgua(true);
                             Turno = 1;
                         }
@@ -420,19 +407,29 @@ public class HundirLaFlota {
                 imprimirTablero();
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (contadorHundidos1 == NumBarcos){
-                System.out.println("¡Has ganado!");
-            }   
-            else if (contadorHundidos2 == NumBarcos)
-            {
-                System.out.println("¡Has perdido!");
+            try {
+                if (contadorHundidos1 == NumBarcos) {
+                    System.out.println("¡Has ganado!");
+                    sonido.cargarSonido("Sonidos/ganar.wav");
+                    sonido.reproducir();
+                    Thread.sleep(3000);
+                    System.exit(0);
+                } else if (contadorHundidos2 == NumBarcos) {
+                    System.out.println("Has perdido");
+                    Thread.sleep(3000);
+                    System.exit(0);
+                }
+                } 
+            catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            
         }
         while(!juegoAcabado);
         sc.close();
@@ -443,9 +440,11 @@ public class HundirLaFlota {
         HundirLaFlota juego = new HundirLaFlota();
         juego.Tutorial();
 
-        try {
+        try 
+        {
             Thread.sleep(10000);
-        } catch (InterruptedException e) {
+        } 
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
 
