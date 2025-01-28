@@ -41,7 +41,6 @@ public class HundirLaFlota {
             int Random2 = (int) (Math.random() * 10);
             int Random3 = (int) (Math.random() * 2);
             int contador2 = 0;
-            System.out.println("Barco " + contador + " en " + Random1 + " " + Random2);
             do
             {
                 if(Random3 == 0)
@@ -67,12 +66,20 @@ public class HundirLaFlota {
     public void imprimirTablero() {
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[0].length; j++) {
-                if (tablero[i][j].getOcupado()) 
+                if (tablero[i][j].getOcupado() && tablero[i][j].getHundido()) 
                 {
                     System.out.print("\u001B[31m" + simbolo + "  ");
-                } else 
+                } else if (tablero[i][j].getOcupado() && !tablero[i][j].getHundido() && tablero[i][j].getTocado()) 
                 {
-                    System.out.print("\u001B[32m" + simbolo + "  "); 
+                    System.out.print("\u001B[33m" + simbolo + "  "); 
+                } else if (tablero[i][j].getOcupado() && !tablero[i][j].getHundido() && !tablero[i][j].getTocado()) 
+                {
+                    System.out.print("\u001B[35m" + simbolo + "  "); 
+                } else if (tablero[i][j].getAgua()) 
+                {
+                    System.out.print("\u001B[34m" + simbolo + "  ");
+                } else {
+                    System.out.print("\u001B[32m" + simbolo + "  ");
                 }
             }
             System.out.println("\u001B[0m"); 
@@ -86,14 +93,7 @@ public class HundirLaFlota {
                     System.out.print("\u001B[34m" + simbolo + "  ");
                 } else if (tablero2[i][j].getTocado()) {
                     System.out.print("\u001B[33m" + simbolo + "  ");
-                }
-
-                //BORRAR
-                else if (tablero2[i][j].getOcupado()) {
-                    System.out.print("\u001B[0m" + simbolo + "  ");
-                }
-
-                else if (tablero2[i][j].getHundido()) {
+                } else if (tablero2[i][j].getHundido()) {
                     System.out.print("\u001B[31m" + simbolo + "  ");
                 } else {
                     System.out.print("\u001B[32m" + simbolo + "  ");
@@ -303,6 +303,7 @@ public class HundirLaFlota {
                             }
                         }
                     }
+                    contadorHundidos1++;
                 }
             }
             else if (tablero2[fila][columna].getAgua())
@@ -318,6 +319,29 @@ public class HundirLaFlota {
             }
             
             imprimirTablero2();
+
+            int Random1;
+            int Random2;
+            boolean disparoValido = false;
+            while (!disparoValido) {
+                Random1 = (int) (Math.random() * 10);
+                Random2 = (int) (Math.random() * 10);
+                if (!tablero[Random1][Random2].getAgua() || !tablero[Random1][Random2].getTocado() || !tablero[Random1][Random2].getHundido()) {
+                    disparoValido = true;
+                    if (tablero[Random1][Random2].getOcupado()) {
+                        System.out.println("El enemigo ha tocado un barco");
+                        System.out.println("-------------------");
+                        tablero[Random1][Random2].setTocado(true);
+                        tablero[Random1][Random2].getBarco().numTocado++;
+                    } else {
+                        System.out.println("El enemigo ha disparado al agua");
+                        System.out.println("-------------------");
+                        tablero[Random1][Random2].setAgua(true);
+                    }
+                }
+            }
+
+            imprimirTablero();
 
             if (contadorHundidos1 == NumBarcos){
                 System.out.println("¡Has ganado!");
