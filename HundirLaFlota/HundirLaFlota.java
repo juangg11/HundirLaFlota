@@ -103,6 +103,20 @@ public class HundirLaFlota {
         }
     }
     
+    public void Tutorial() {
+        System.out.println("-------------------");
+        System.out.println("\u001B[1mBienvenido a Hundir la Flota");
+        System.out.println("El objetivo del juego es hundir los barcos enemigos antes de que él hunda los tuyos");
+        System.out.println("Para colocar los barcos, introduce la fila, la columna y la orientación (1 = horizontal, 0 = vertical)");
+        System.out.println("Para disparar, introduce la fila y la columna");
+        System.out.println("-------------------");
+        System.out.println("\u001B[34m" + simbolo + "\u001B[0m Indica Agua");
+        System.out.println("\u001B[33m" + simbolo + "\u001B[0m Indica Tocado");
+        System.out.println("\u001B[31m" + simbolo + "\u001B[0m Indica Hundido");
+        System.out.println("\u001B[35m" + simbolo + "\u001B[0m Indica Barco");
+        System.out.println("-------------------");
+    }
+
     public void Jugar()
     {   
         CrearTablero();
@@ -369,11 +383,20 @@ public class HundirLaFlota {
             }
         }
         while(!juegoAcabado);
+        sc.close();
     }
 
     public static void main(String[] args) 
     {
         HundirLaFlota juego = new HundirLaFlota();
+        juego.Tutorial();
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         juego.Jugar();
     }
 }
