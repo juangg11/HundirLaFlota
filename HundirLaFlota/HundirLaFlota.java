@@ -26,23 +26,38 @@ public class HundirLaFlota {
             }
         }
 
+        Barco barcos2[] = new Barco[NumBarcos];
+
+        for (int i = 0; i < barcos2.length; i++)
+        {
+            barcos2[i] = new Barco(i+1);
+        }
+
+
         int contador = 0;
         while(contador < NumBarcos)
         {
             int Random1 = (int) (Math.random() * 10);
             int Random2 = (int) (Math.random() * 10);
             int Random3 = (int) (Math.random() * 2);
-            //for(int i = 0; i < barco; i++)
-            if(Random3 == 0)
+            int contador2 = 0;
+            System.out.println("Barco " + contador + " en " + Random1 + " " + Random2);
+            do
             {
-                tablero2[Random1][Random2].setBarco(new Barco(contador));
-                tablero2[Random1][Random2].setOcupado(true);
+                if(Random3 == 0)
+                {
+                    tablero2[Random1][Random2+contador2].setBarco(barcos2[contador]);
+                    tablero2[Random1][Random2+contador2].setOcupado(true);
+                }
+                else
+                {
+                    tablero2[Random1+contador2][Random2].setBarco(barcos2[contador]);
+                    tablero2[Random1+contador2][Random2].setOcupado(true);
+                }
+                contador2++;
             }
-            else
-            {
-                tablero2[Random1][Random2].setBarco(new Barco(contador));
-                tablero2[Random1][Random2].setOcupado(true);
-            }
+            while(contador2<contador+1);
+
             contador++;
         }
         imprimirTablero2();
@@ -70,6 +85,15 @@ public class HundirLaFlota {
                 if (tablero2[i][j].getAgua()) {
                     System.out.print("\u001B[34m" + simbolo + "  ");
                 } else if (tablero2[i][j].getTocado()) {
+                    System.out.print("\u001B[33m" + simbolo + "  ");
+                }
+
+                //BORRAR
+                else if (tablero2[i][j].getOcupado()) {
+                    System.out.print("\u001B[0m" + simbolo + "  ");
+                }
+
+                else if (tablero2[i][j].getHundido()) {
                     System.out.print("\u001B[31m" + simbolo + "  ");
                 } else {
                     System.out.print("\u001B[32m" + simbolo + "  ");
@@ -243,9 +267,8 @@ public class HundirLaFlota {
                 System.out.println("Introduce la columna: ");
                 columna = sc.nextInt();
                 System.out.println("-------------------");
-                tablero2[fila][columna].setAgua(true);
     
-                if(fila < 0 || fila > 9 || columna < 0 || columna > 9)
+                if(fila < 0 || fila > 9 || columna < 0 || columna > 9 || tablero2[fila][columna].getAgua() || tablero2[fila][columna].getHundido() || tablero2[fila][columna].getTocado())
                 {   
                     System.out.println("----------X---------");
                     System.out.println("\u001B[31mDatos incorrectos\u001B[0m");
@@ -259,12 +282,33 @@ public class HundirLaFlota {
             }
             while(!datosCorrectos);
     
-            if (tablero2[fila][columna].getOcupado())
+            if (tablero2[fila][columna].getOcupado() && !tablero2[fila][columna].getAgua())
             {
                 System.out.println("¡Tocado!");
                 System.out.println("-------------------");
                 tablero2[fila][columna].setTocado(true);
-                comprobarHundido(tablero2, fila, columna);
+                tablero2[fila][columna].setAgua(false);
+                tablero2[fila][columna].getBarco().numTocado++;
+                
+                if(tablero2[fila][columna].getBarco().comprobarHundido())
+                {
+                    for(int i = 0; i < tablero2.length; i++)
+                    {
+                        for(int j = 0; j < tablero2[0].length; j++)
+                        {
+                            if(tablero2[i][j].getBarco() == tablero2[fila][columna].getBarco())
+                            {
+                                tablero2[i][j].setHundido(true);
+                                tablero2[i][j].setTocado(false);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (tablero2[fila][columna].getAgua())
+            {
+                System.out.println("¡Casilla Repetida!");
+                System.out.println("-------------------");
             }
             else
             {
@@ -286,22 +330,6 @@ public class HundirLaFlota {
         while(!juegoAcabado);
     }
 
-    public void comprobarHundido(Casilla[][] tablero, int fila, int columna) {
-        Casilla casillaTocada = tablero[fila][columna];
-        int recorrido = casillaTocada.getBarco().getTamanio();
-        int contador = 0;
-        for(int i = 0; i < recorrido; i++)
-        {
-            if(tablero[fila][columna+i].getTocado()){
-                contador++;
-            }
-        }
-        if(contador == 0){
-            System.out.println("¡Hundido!");
-            casillaTocada.getBarco().hundido = true;
-            casillaTocada.tocarCasilla(tablero, casillaTocada.getBarco());
-        }
-    }
     public static void main(String[] args) {
         HundirLaFlota juego = new HundirLaFlota();
         juego.Jugar();
