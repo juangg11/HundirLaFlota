@@ -326,13 +326,30 @@ public class HundirLaFlota {
             while (!disparoValido) {
                 Random1 = (int) (Math.random() * 10);
                 Random2 = (int) (Math.random() * 10);
-                if (!tablero[Random1][Random2].getAgua() || !tablero[Random1][Random2].getTocado() || !tablero[Random1][Random2].getHundido()) {
+                if (!tablero[Random1][Random2].getAgua() && !tablero[Random1][Random2].getTocado() && !tablero[Random1][Random2].getHundido()) {
                     disparoValido = true;
                     if (tablero[Random1][Random2].getOcupado()) {
                         System.out.println("El enemigo ha tocado un barco");
                         System.out.println("-------------------");
                         tablero[Random1][Random2].setTocado(true);
                         tablero[Random1][Random2].getBarco().numTocado++;
+
+                        if(tablero[Random1][Random2].getBarco().comprobarHundido())
+                        {
+                            for(int i = 0; i < tablero.length; i++)
+                            {
+                                for(int j = 0; j < tablero[0].length; j++)
+                                {
+                                    if(tablero[i][j].getBarco() == tablero[Random1][Random2].getBarco())
+                                    {
+                                    tablero[i][j].setHundido(true);
+                                    tablero[i][j].setTocado(false);
+                                    }
+                                }
+                            }
+                        contadorHundidos2++;
+                        }
+
                     } else {
                         System.out.println("El enemigo ha disparado al agua");
                         System.out.println("-------------------");
@@ -354,7 +371,8 @@ public class HundirLaFlota {
         while(!juegoAcabado);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         HundirLaFlota juego = new HundirLaFlota();
         juego.Jugar();
     }
