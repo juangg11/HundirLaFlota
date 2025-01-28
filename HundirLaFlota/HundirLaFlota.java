@@ -75,7 +75,6 @@ public class HundirLaFlota {
 
             contador++;
         }
-        imprimirTablero2();
     }
 
 
@@ -136,6 +135,7 @@ public class HundirLaFlota {
     public void Jugar()
     {   
         CrearTablero();
+        CrearTablero2();
 
         Scanner sc  = new Scanner(System.in);
         
@@ -303,7 +303,7 @@ public class HundirLaFlota {
                 System.out.println("-------------------");
                 System.out.println("Este es el tablero enemigo, para jugar, introduce las coordenadas de disparo:");
                 System.out.println("-------------------");
-                CrearTablero2();
+                imprimirTablero2();
 
                 do 
                 {
