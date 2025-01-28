@@ -5,6 +5,7 @@ public class HundirLaFlota {
     private Casilla[][] tablero2 = new Casilla[10][10];
     int NumBarcos = 3;
     private char simbolo = '\u25A0';
+    private int Turno = 1;
 
     public void CrearTablero(){
         for (int i = 0; i < tablero.length; i++) 
@@ -15,6 +16,21 @@ public class HundirLaFlota {
             }
         }
         imprimirTablero();
+    }
+
+    public void TurnoAzar()
+    {    
+        Turno = (int) (Math.random() * 2);
+        if (Turno == 1)
+        {
+            System.out.println("-------------------");
+            System.out.println("Empieza el Jugador");
+        }
+        else if (Turno == 0)
+        {
+            System.out.println("-------------------");
+            System.out.println("Empieza el Enemigo");
+        }
     }
 
     public void CrearTablero2(){
@@ -106,9 +122,9 @@ public class HundirLaFlota {
     public void Tutorial() {
         System.out.println("-------------------");
         System.out.println("\u001B[1mBienvenido a Hundir la Flota");
-        System.out.println("El objetivo del juego es hundir los barcos enemigos antes de que él hunda los tuyos");
-        System.out.println("Para colocar los barcos, introduce la fila, la columna y la orientación (1 = horizontal, 0 = vertical)");
-        System.out.println("Para disparar, introduce la fila y la columna");
+        System.out.println("El objetivo del juego es hundir los barcos enemigos antes de que hunda los tuyos");
+        System.out.println("Para colocar los barcos, introduce la fila, la columna y la orientación");
+        System.out.println("Para disparar, introduce solo la fila y la columna");
         System.out.println("-------------------");
         System.out.println("\u001B[34m" + simbolo + "\u001B[0m Indica Agua");
         System.out.println("\u001B[33m" + simbolo + "\u001B[0m Indica Tocado");
@@ -261,10 +277,20 @@ public class HundirLaFlota {
 
         System.out.println("-------------------");
         System.out.println("Has colocado los barcos");
-        System.out.println("-------------------");
-        System.out.println("Este es el tablero enemigo, para jugar, introduce las coordenadas de disparo:");
-        System.out.println("-------------------");
-        CrearTablero2();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        TurnoAzar();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         boolean juegoAcabado = false;
         int contadorHundidos1 = 0;
@@ -272,107 +298,133 @@ public class HundirLaFlota {
 
         do
         {
-            do 
+            if(Turno == 1)
             {
                 System.out.println("-------------------");
-                System.out.println("Introduce la fila: ");
-                fila = sc.nextInt();
+                System.out.println("Este es el tablero enemigo, para jugar, introduce las coordenadas de disparo:");
                 System.out.println("-------------------");
-                System.out.println("Introduce la columna: ");
-                columna = sc.nextInt();
-                System.out.println("-------------------");
-    
-                if(fila < 0 || fila > 9 || columna < 0 || columna > 9 || tablero2[fila][columna].getAgua() || tablero2[fila][columna].getHundido() || tablero2[fila][columna].getTocado())
-                {   
-                    System.out.println("----------X---------");
-                    System.out.println("\u001B[31mDatos incorrectos\u001B[0m");
-                    System.out.println("----------X---------");
-                    datosCorrectos = false;
+                CrearTablero2();
+
+                do 
+                {
+                    System.out.println("-------------------");
+                    System.out.println("Introduce la fila: ");
+                    fila = sc.nextInt();
+                    System.out.println("-------------------");
+                    System.out.println("Introduce la columna: ");
+                    columna = sc.nextInt();
+                    System.out.println("-------------------");
+        
+                    if(fila < 0 || fila > 9 || columna < 0 || columna > 9 || tablero2[fila][columna].getAgua() || tablero2[fila][columna].getHundido() || tablero2[fila][columna].getTocado())
+                    {   
+                        System.out.println("----------X---------");
+                        System.out.println("\u001B[31mDatos incorrectos\u001B[0m");
+                        System.out.println("----------X---------");
+                        datosCorrectos = false;
+                    }
+                    else
+                    {
+                        datosCorrectos = true;
+                    }
+                }
+                while(!datosCorrectos);
+        
+                if (tablero2[fila][columna].getOcupado() && !tablero2[fila][columna].getAgua())
+                {
+                    System.out.println("¡Tocado!");
+                    System.out.println("-------------------");
+                    tablero2[fila][columna].setTocado(true);
+                    tablero2[fila][columna].setAgua(false);
+                    tablero2[fila][columna].getBarco().numTocado++;
+                    
+                    if(tablero2[fila][columna].getBarco().comprobarHundido())
+                    {
+                        for(int i = 0; i < tablero2.length; i++)
+                        {
+                            for(int j = 0; j < tablero2[0].length; j++)
+                            {
+                                if(tablero2[i][j].getBarco() == tablero2[fila][columna].getBarco())
+                                {
+                                    tablero2[i][j].setHundido(true);
+                                    tablero2[i][j].setTocado(false);
+                                }
+                            }
+                        }
+                        contadorHundidos1++;
+                    }
+                }
+                else if (tablero2[fila][columna].getAgua())
+                {
+                    System.out.println("¡Casilla Repetida!");
+                    System.out.println("-------------------");
                 }
                 else
                 {
-                    datosCorrectos = true;
+                    System.out.println("¡Agua!");
+                    System.out.println("-------------------");
+                    tablero2[fila][columna].setAgua(true);
+                    Turno = 0;
                 }
-            }
-            while(!datosCorrectos);
-    
-            if (tablero2[fila][columna].getOcupado() && !tablero2[fila][columna].getAgua())
-            {
-                System.out.println("¡Tocado!");
-                System.out.println("-------------------");
-                tablero2[fila][columna].setTocado(true);
-                tablero2[fila][columna].setAgua(false);
-                tablero2[fila][columna].getBarco().numTocado++;
                 
-                if(tablero2[fila][columna].getBarco().comprobarHundido())
-                {
-                    for(int i = 0; i < tablero2.length; i++)
-                    {
-                        for(int j = 0; j < tablero2[0].length; j++)
-                        {
-                            if(tablero2[i][j].getBarco() == tablero2[fila][columna].getBarco())
-                            {
-                                tablero2[i][j].setHundido(true);
-                                tablero2[i][j].setTocado(false);
-                            }
-                        }
-                    }
-                    contadorHundidos1++;
+                imprimirTablero2();
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }
-            else if (tablero2[fila][columna].getAgua())
-            {
-                System.out.println("¡Casilla Repetida!");
-                System.out.println("-------------------");
-            }
-            else
-            {
-                System.out.println("¡Agua!");
-                System.out.println("-------------------");
-                tablero2[fila][columna].setAgua(true);
             }
             
-            imprimirTablero2();
-
-            int Random1;
-            int Random2;
-            boolean disparoValido = false;
-            while (!disparoValido) {
-                Random1 = (int) (Math.random() * 10);
-                Random2 = (int) (Math.random() * 10);
-                if (!tablero[Random1][Random2].getAgua() && !tablero[Random1][Random2].getTocado() && !tablero[Random1][Random2].getHundido()) {
-                    disparoValido = true;
-                    if (tablero[Random1][Random2].getOcupado()) {
-                        System.out.println("El enemigo ha tocado un barco");
-                        System.out.println("-------------------");
-                        tablero[Random1][Random2].setTocado(true);
-                        tablero[Random1][Random2].getBarco().numTocado++;
-
-                        if(tablero[Random1][Random2].getBarco().comprobarHundido())
-                        {
-                            for(int i = 0; i < tablero.length; i++)
+            else if(Turno == 0)
+            {
+                int Random1;
+                int Random2;
+                boolean disparoValido = false;
+                while (!disparoValido) 
+                {
+                    Random1 = (int) (Math.random() * 10);
+                    Random2 = (int) (Math.random() * 10);
+                    if (!tablero[Random1][Random2].getAgua() && !tablero[Random1][Random2].getTocado() && !tablero[Random1][Random2].getHundido()) {
+                        disparoValido = true;
+                        if (tablero[Random1][Random2].getOcupado()) {
+                            System.out.println("El enemigo ha tocado un barco");
+                            System.out.println("-------------------");
+                            tablero[Random1][Random2].setTocado(true);
+                            tablero[Random1][Random2].getBarco().numTocado++;
+    
+                            if(tablero[Random1][Random2].getBarco().comprobarHundido())
                             {
-                                for(int j = 0; j < tablero[0].length; j++)
+                                for(int i = 0; i < tablero.length; i++)
                                 {
-                                    if(tablero[i][j].getBarco() == tablero[Random1][Random2].getBarco())
+                                    for(int j = 0; j < tablero[0].length; j++)
                                     {
-                                    tablero[i][j].setHundido(true);
-                                    tablero[i][j].setTocado(false);
+                                        if(tablero[i][j].getBarco() == tablero[Random1][Random2].getBarco())
+                                        {
+                                        tablero[i][j].setHundido(true);
+                                        tablero[i][j].setTocado(false);
+                                        }
                                     }
                                 }
+                            contadorHundidos2++;
                             }
-                        contadorHundidos2++;
+    
+                        } else {
+                            System.out.println("El enemigo ha disparado al agua");
+                            System.out.println("-------------------");
+                            tablero[Random1][Random2].setAgua(true);
+                            Turno = 1;
                         }
-
-                    } else {
-                        System.out.println("El enemigo ha disparado al agua");
-                        System.out.println("-------------------");
-                        tablero[Random1][Random2].setAgua(true);
                     }
                 }
-            }
+    
+                imprimirTablero();
 
-            imprimirTablero();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (contadorHundidos1 == NumBarcos){
                 System.out.println("¡Has ganado!");
