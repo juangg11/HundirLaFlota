@@ -1,67 +1,68 @@
 public class Casilla {
-    private boolean Ocupado;
-    private boolean Agua;
-    private Barco barco;
-    private boolean Tocado;
-    private boolean Hundido;
+	private boolean ocupado;
+	private boolean agua;
+	private Barco barco;
+	private boolean tocado;
+	private boolean hundido;
 
-    public Casilla() {
-        this.Ocupado = false;
-        this.Agua = false;
-        this.barco = null;
-        this.Tocado = false;
-        this.Hundido = false;
-    }
-    public boolean getTocado() {
-        return Tocado;
-    }
+	public Casilla() {
+		this.ocupado = false;
+		this.agua = false;
+		this.barco = null;
+		this.tocado = false;
+		this.hundido = false;
+	}
 
-    public void setTocado(boolean Tocado) {
-        this.Tocado = Tocado;
-    }
+	public boolean getTocado() {
+		return tocado;
+	}
 
-    public boolean getOcupado() {
-        return Ocupado;
-    }
+	public void setTocado(boolean Tocado) {
+		this.tocado = Tocado;
+	}
 
-    public void setOcupado(boolean Ocupado) {
-        this.Ocupado = Ocupado;
-    }
+	public boolean getOcupado() {
+		return ocupado;
+	}
 
-    public Barco getBarco() {
-        return barco;
-    }
+	public void setOcupado(boolean Ocupado) {
+		this.ocupado = Ocupado;
+	}
 
-    public void setBarco(Barco barco) {
-        this.barco = barco;
-    }
+	public Barco getBarco() {
+		return barco;
+	}
 
-    public void setAgua(boolean Agua) {
-        this.Agua = Agua;
-    }
+	public void setBarco(Barco barco) {
+		this.barco = barco;
+	}
 
-    public boolean getAgua() {
-        return Agua;
-    }   
+	public void setAgua(boolean Agua) {
+		this.agua = Agua;
+	}
 
-    public boolean getHundido() {
-        return Hundido;
-    }
+	public boolean getAgua() {
+		return agua;
+	}
 
-    public void setHundido(boolean Hundido) {
-        this.Hundido = Hundido;
-    }
-    public void tocarCasilla(Casilla casilla[][], Barco barco) 
-    {
-        for(int i = 0; i < casilla.length; i++)
-        {
-            for(int j = 0; j < casilla[0].length; j++)
-            {
-                if(casilla[i][j].getBarco() == barco)
-                {
-                    casilla[i][j].Hundido = true;
-                }
-            }
-        }
-    }
+	public boolean getHundido() {
+		return hundido;
+	}
+
+	public void setHundido(boolean Hundido) {
+		this.hundido = Hundido;
+	}
+
+	public void tocarCasilla(Casilla casilla[][], Barco barco) {
+		
+		for (int i = 0; i < casilla.length; i++) {
+			
+			for (int j = 0; j < casilla[0].length; j++) {
+				
+				if (casilla[i][j].getBarco() == barco) {
+					casilla[i][j].hundido = true;
+				}
+			}
+		}
+	}
 }
