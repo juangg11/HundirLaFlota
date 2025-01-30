@@ -131,11 +131,11 @@ public class JugadorHumano {
 				}
 			}
 			imprimirTablero(tablero);
+			
 			int prob = Integer.parseInt(valores.get((fila + columna) + 1));
 			int indice = valores.indexOf(fila + "" + columna) + 1;
 			valores.set(indice, String.valueOf(prob + 1));
 		}
-
 	}
 
 	public int disparar(Casilla[][] tablero2, int contadorHundidos1) {
