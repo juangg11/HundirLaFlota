@@ -8,31 +8,6 @@ import java.util.List;
 public class GestorArchivos {
 
     private static final String FILE_PATH = "datos/datos.csv";
-
-    public static void imprimir(String mensaje) {
-        try (FileWriter writer = new FileWriter(FILE_PATH, true)) {
-            writer.write(mensaje + System.lineSeparator());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String leer(int numeroLinea) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String linea;
-            int contador = 0;
-            while ((linea = reader.readLine()) != null) {
-                if (contador == numeroLinea) {
-                    return linea;
-                }
-                contador++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static void inicializarTablero() {
         try (FileWriter writer = new FileWriter(FILE_PATH)) {
             for (int fila = 0; fila < 10; fila++) {

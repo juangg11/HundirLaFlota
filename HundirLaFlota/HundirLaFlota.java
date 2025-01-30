@@ -1,4 +1,4 @@
-import java.util.List;
+//import java.util.List;
 
 public class HundirLaFlota {
 	private Casilla[][] tablero = new Casilla[10][10];
@@ -24,7 +24,6 @@ public class HundirLaFlota {
 			System.out.println("-------------------");
 		}
 	}
-
 	public void Tutorial() {
 		System.out.println("-------------------");
 		System.out.println("\u001B[1mBienvenido a Hundir la Flota");
@@ -45,7 +44,8 @@ public class HundirLaFlota {
 
 		jh.colocacion(tablero, numBarcos);
 		System.out.println("Has colocado los barcos");
-
+        archivo.guardarCSV(jh.getValores());
+        
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -115,8 +115,6 @@ public class HundirLaFlota {
 
 	public static void main(String[] args) {
 		//archivo.inicializarTablero();
-		//List<String> valores = archivo.leerCSV();
-		//valores.set(1, "1"+ System.lineSeparator());
 		HundirLaFlota juego = new HundirLaFlota();
 		juego.Tutorial();
 
@@ -126,6 +124,5 @@ public class HundirLaFlota {
 			e.printStackTrace();
 		}
 		juego.Jugar();
-		archivo.guardarCSV(valores);
 	}
 }

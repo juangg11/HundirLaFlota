@@ -10,7 +10,11 @@ public class JugadorHumano {
 	private int orientacion;
 	private boolean datosCorrectos;
 	private GestorArchivos archivo = new GestorArchivos();
+	private List<String> valores = archivo.leerCSV();
 
+	public List<String> getValores() {
+		return valores;
+	}
 	public void crearTablero(Casilla[][] tablero) {
 		for (int i = 0; i < tablero.length; i++) {
 			for (int j = 0; j < tablero[0].length; j++) {
@@ -127,11 +131,9 @@ public class JugadorHumano {
 				}
 			}
 			imprimirTablero(tablero);
-			List<String> valores = archivo.leerCSV();
-			int prob = Integer.parseInt(valores.get((fila+columna)+1));
-			int indice = valores.indexOf((fila+""+columna)) + 1;
-			valores.set(indice, prob + 1 + System.lineSeparator());
-			archivo.guardarCSV(valores);
+			int prob = Integer.parseInt(valores.get((fila + columna) + 1));
+			int indice = valores.indexOf(fila + "" + columna) + 1;
+			valores.set(indice, String.valueOf(prob + 1));
 		}
 
 	}

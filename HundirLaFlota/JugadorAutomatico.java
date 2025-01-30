@@ -1,7 +1,8 @@
-
 public class JugadorAutomatico {
 	private char simbolo = '\u25A0';
 	private static Sonido sonido = new Sonido();
+	private GestorArchivos archivo = new GestorArchivos();
+	private List<String> valores = archivo.leerCSV();
 
 	public void crearTablero(Casilla[][] tablero2, int num) {
 		for (int i = 0; i < tablero2.length; i++) {
@@ -80,6 +81,7 @@ public class JugadorAutomatico {
 		while (!disparoValido) {
 			Random1 = (int) (Math.random() * 10);
 			Random2 = (int) (Math.random() * 10);
+			
 			if (!tablero[Random1][Random2].getAgua() && !tablero[Random1][Random2].getTocado()
 					&& !tablero[Random1][Random2].getHundido()) {
 				disparoValido = true;
